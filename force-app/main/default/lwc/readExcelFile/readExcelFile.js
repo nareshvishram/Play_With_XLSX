@@ -5,7 +5,7 @@ import sheetJS from '@salesforce/resourceUrl/xlsx';
 import {loadScript } from 'lightning/platformResourceLoader';
 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+import mxns from "@salesforce/resourceUrl/MXNS1";
 export default class ReadExcelFile extends LightningElement {
     @track dataList = [];
 
@@ -20,6 +20,7 @@ export default class ReadExcelFile extends LightningElement {
             console.log("success");
             console.log(' load  sheet JS complete ');
             this.disableButton = false;
+            console.log('mxnsFile',mxns);
         })
         .catch(error => {
             console.log("failure");
@@ -29,6 +30,8 @@ export default class ReadExcelFile extends LightningElement {
     excelFileToJson(event) {
         event.preventDefault();
         let files = event.target.files;
+        let x=mxns+'ExcelFile_AMSM-NA001_AMSR-1.xlsm';
+        console.log('x',x);
         const analysisExcel = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -57,8 +60,8 @@ export default class ReadExcelFile extends LightningElement {
         });
     }
     printResult() {
-        console.log(JSON.stringify(this.dataList));
-        
+        console.log('file data',JSON.stringify(this.dataList));
+
     }
 
 }

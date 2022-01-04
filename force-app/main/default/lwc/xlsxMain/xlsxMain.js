@@ -31,6 +31,7 @@ export default class XlsxMain extends LightningElement {
       xlsHeader.forEach((item, index) => createXLSLFormatObj[index] = [item])
 
     /* form data key list */
+    console.log('xlsData',xlsData);
       xlsData.forEach((item, selectedRowIndex)=> {
           let xlsRowKey = Object.keys(item[0]);
           item.forEach((value, index) => {
@@ -42,6 +43,7 @@ export default class XlsxMain extends LightningElement {
           })
 
       });
+      console.log('createXLSLFormatObj',createXLSLFormatObj);
     /* creating new Excel */
     var wb = XLSX.utils.book_new();
 
