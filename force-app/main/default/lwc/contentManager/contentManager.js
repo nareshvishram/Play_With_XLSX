@@ -2,6 +2,8 @@ import { api, LightningElement, track, wire } from 'lwc';
 import getContentDetails from '@salesforce/apex/ContentManagerService.getContentDetails';
 import deleteContentDocument from '@salesforce/apex/ContentManagerService.deleteContentDocument';
 import { NavigationMixin } from 'lightning/navigation';
+import sheetJS from '@salesforce/resourceUrl/xlsx';
+import {loadScript } from 'lightning/platformResourceLoader';
 
 const columns = [
     { label: 'Title',       fieldName: 'Title', wrapText : true,
@@ -9,14 +11,14 @@ const columns = [
             iconName: { fieldName: 'icon' }, iconPosition: 'left' 
         }
     },
-    { label: 'Created By',  fieldName: 'CREATED_BY',
-        cellAttributes: { 
-            iconName: 'standard:user', iconPosition: 'left' 
-        }
-    },
     { label: 'File Size',   fieldName: 'Size' },
     { label: 'Download', type:  'button', typeAttributes: { 
             label: 'Download', name: 'Download', variant: 'brand', iconName: 'action:download', 
+            iconPosition: 'right' 
+        } 
+    },
+    { label: 'Preview', type:  'button', typeAttributes: { 
+            label: 'Preview', name: 'Preview', variant: 'brand', iconName: 'action:edit', 
             iconPosition: 'right' 
         } 
     }
@@ -56,6 +58,8 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
         const row = event.detail.row;
         if(actionName==='Download'){
              this.downloadFile(row);
+        }else if(actionName==='Preview'){
+            this.PreviewFile(row);
         }
 
     }
@@ -64,6 +68,16 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
                 type: 'standard__webPage',
                 attributes: {
                     url: file.downloadUrl
+                }
+            }, false 
+        );
+    }
+
+    PreviewFile(file){
+        this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: file.previewUrl
                 }
             }, false 
         );
@@ -88,10 +102,11 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
             finalData.forEach(file => {
                 file.downloadUrl = baseUrl+'sfc/servlet.shepherd/document/download/'+file.ContentDocumentId;
                 file.fileUrl     = baseUrl+'sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId='+file.Id;
+                file.previewUrl  = baseUrl+'lightning/r/ContentDocument/'+file.ContentDocumentId+'/view';
                 file.CREATED_BY  = file.ContentDocument.CreatedBy.Name;
                 file.Size        = this.formatBytes(file.ContentDocument.ContentSize, 2);
-
                 let fileType = file.ContentDocument.FileType.toLowerCase();
+                console.log('finalData@@',finalData);
                 if(imageExtensions.includes(fileType)){
                     file.icon = 'doctype:image';
                 }else{
