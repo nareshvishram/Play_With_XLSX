@@ -2,13 +2,19 @@
     <!--file handling-->
     <lightning-card title="File Upload Demo LWC" icon-name="custom:custom14">
         <div class="slds-var-m-around_medium">
+            <lightning-input type="text" onchange={handleWSChange} label="Enter Worksheet Name" required="true"></lightning-input>
+        </div>
+        <div class="slds-var-m-around_medium">
+            <lightning-input type="text" onchange={handleRangeChange} label="Enter Cell Name or Range (i.e. A2:C2)" required="true"></lightning-input>
+        </div>
+        <div class="slds-var-m-around_medium">
+            <lightning-input type="text" onchange={handleValueChange} label="Enter Value to change (if multiple then use ','' seperated)" required="true">
+            </lightning-input>
+        </div>
+        <div class="slds-var-m-around_medium">
             <lightning-input type="file" 
             accept=".xlsx, .xls, .xlsm"
             label="Upload" onchange={excelFileToJson} disabled={disableButton} multiple="false"></lightning-input>
         </div>
-        <lightning-button variant="brand" label=" Print the results " 
-         onclick={printResult} 
-        disabled={disableButton}
-        class="slds-var-m-left_x-small"></lightning-button>
     </lightning-card>
 </template>

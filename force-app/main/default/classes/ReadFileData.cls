@@ -1,14 +1,13 @@
 public with sharing class ReadFileData {
     @AuraEnabled
-    public static String readFileFromRecord(String recordId) {
+    public static Blob readFileFromRecord(String recordId) {
         ContentDocumentLink contentDocumentLink = [
             SELECT id, ContentDocumentId, ContentDocument.Description, 
             ContentDocument.Title, LinkedEntityId 
             FROM ContentDocumentLink 
-            WHERE LinkedEntityId = '0819D0000006FVV' 
+            WHERE LinkedEntityId = '0039D00000EoDbZQAV' 
             LIMIT 1
         ];
-
         ContentVersion cv = [
             SELECT VersionData 
             FROM ContentVersion 
@@ -16,6 +15,6 @@ public with sharing class ReadFileData {
             AND IsLatest = true
             LIMIT 1
         ];
-        return EncodingUtil.base64Encode(cv.VersionData);
+        return cv.VersionData;
     }
 }

@@ -1,0 +1,14 @@
+<template>
+    <!--file handling-->
+    <lightning-card title="Perform Operation from LT-43" icon-name="custom:custom14">
+        <div class="slds-var-m-around_medium">
+            <h3>This will insert <b>10</b> samples in <b>Samples</b> worksheet from <b>D2:D11.</b><br>
+            It will then mark tested to even numbered samples.i.e, Sample2,Sample4....</h3>
+        </div>
+        <div class="slds-var-m-around_medium">
+            <lightning-input type="file" 
+            accept=".xlsx, .xls, .xlsm"
+            label="Upload" onchange={operations} disabled={disableButton} multiple="false"></lightning-input>
+        </div>
+    </lightning-card>
+</template>

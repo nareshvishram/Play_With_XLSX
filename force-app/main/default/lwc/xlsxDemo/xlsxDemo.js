@@ -5,9 +5,10 @@ export default class XlsxDemo extends LightningElement {
   @track xlsHeader = []; // store all the headers of the the tables
   @track workSheetNameList = []; // store all the sheets name of the the tables
   @track xlsData = []; // store all tables data
-  @track filename = "MXNS_demo.xlsm"; // Name of the file
+  @track filename = "Kabilan_demo.xlsm"; // Name of the file
   @track accountData = []; // used only for storing account table
   @track contactData = []; // used only for storing contact table
+
   connectedCallback() {
     //apex call for bringing the contact data  
     getContactLists()

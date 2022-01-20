@@ -1,8 +1,7 @@
 <template>
 
     <div class="slds-m-around_medium">
-        <center><button onclick={download} class="btn success">Download</button></center>
-        <br>
+        <button onclick={download} class="btn success">Download</button>
         <!--xlsxMain component calling-->
         <c-xlsx-main
           header-list={xlsHeader}
@@ -15,7 +14,7 @@
     <div class="margin-bottom-2rem">
       <lightning-card title="XLSX multi worksheet" icon-name="custom:custom14">
         <div class="slds-m-around_medium">
-          <center><button onclick={download} class="btn success">Download</button></center>
+          <button onclick={download} class="btn success">Download</button>
           <!--xlsxMain component calling-->
           <c-xlsx-main
             header-list={xlsHeader}
@@ -26,10 +25,8 @@
         </div>
         <div class="container">
           <!--Account Table-->
-          <div class="child-container" style="border: 1px bold black;padding:10px;margin:10px">
-            <div style="align-items: center;border:2px bold green;border-radius:50%;color:red">
-              <center><h1><b>Account Table</b></h1></center>
-            </div>
+          <div class="child-container">
+            <h1>Account Table</h1>
             <table>
               <tr>
                 <template for:each={accountHeader} for:item="header">
@@ -47,11 +44,8 @@
             </table>
           </div>
           <!--Contact Table-->
-          <hr>
-          <div class="child-container" style="border: 1px;padding:10px;margin:10px">
-            <div style="align-items: center;border:2px bold green;border-radius:50%;color:red">
-              <center><h1><b>Contact Table</b></h1></center>
-            </div>
+          <div class="child-container">
+            <h1>Contact Table</h1>
             <table>
               <tr>
                 <template for:each={contactHeader} for:item="header">
@@ -72,5 +66,4 @@
         </div>
       </lightning-card>
     </div>
-
   </template>

@@ -2,8 +2,9 @@ import { api, LightningElement, track, wire } from 'lwc';
 import getContentDetails from '@salesforce/apex/ContentManagerService.getContentDetails';
 import deleteContentDocument from '@salesforce/apex/ContentManagerService.deleteContentDocument';
 import { NavigationMixin } from 'lightning/navigation';
-import sheetJS from '@salesforce/resourceUrl/xlsx';
+import workbook from '@salesforce/resourceUrl/xlsx';
 import {loadScript } from 'lightning/platformResourceLoader';
+import mf from '@salesforce/resourceUrl/myFiles';
 
 const columns = [
     { label: 'Title',       fieldName: 'Title', wrapText : true,
@@ -41,8 +42,23 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
 
     wiredFilesResult;
 
+    renderedCallback() {
+       
+    }
+
     connectedCallback() {
         console.log('in connectedCallback');
+        console.log("renderedCallback xlsx");
+        if (this.librariesLoaded) return;
+        this.librariesLoaded = true;
+        Promise.all([loadScript(this, workbook + "/xlsx/xlsx.full.min.js")])
+        .then(() => {
+            console.log("success");
+        })
+        .catch(error => {
+            console.log("failure");
+        });
+        //console.log('myfile@@',mf);
         this.handleSync();
     }
 
@@ -82,6 +98,47 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
             }, false 
         );
     }
+
+    testConsole(file){
+        //  console.log("renderedCallback myFile");
+        // Promise.all([loadScript(this, mf + "/myFiles/ExcelFile_AMSM-NA001_AMSR-1.xlsm")])
+        // .then((res) => {
+        //     console.log("success reading file@@",res);
+        // })
+        // .catch(error => {
+        //     console.log("failure in file read"+error);
+        // });
+        // console.log('myfile@@',mf+'/myFiles/ExcelFile_AMSM-NA001_AMSR-1.xlsm');
+        let XLSX = window.XLSX;
+        // let url=mf+'/myFiles/ExcelFile_AMSM-NA001_AMSR-1.xlsm';
+       // let ws = XLSX.readFile(url);
+        console.log('ws@@',XLSX);
+        const analysisExcel = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+        analysisExcel(file)
+        .then((result) => {
+            let datas = []; //  Store the acquired data 
+            let XLSX = window.XLSX;
+            let workbook = XLSX.read(result);
+            for (let sheet in workbook.Sheets) {
+                if (workbook.Sheets.hasOwnProperty(sheet)) {
+                    datas = datas.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
+                }
+            }
+            this.dataList = datas;
+            const toastEvent = new ShowToastEvent({
+                variant: "success",
+                message: ' The file has been uploaded and parsed successfully ',
+            });
+            this.dispatchEvent(toastEvent);
+        });
+    }
+
     handleSync(){
 
         let imageExtensions = ['png','jpg','gif'];
@@ -106,7 +163,7 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
                 file.CREATED_BY  = file.ContentDocument.CreatedBy.Name;
                 file.Size        = this.formatBytes(file.ContentDocument.ContentSize, 2);
                 let fileType = file.ContentDocument.FileType.toLowerCase();
-                console.log('finalData@@',finalData);
+                console.log('finalData@@',file.VersionData);
                 if(imageExtensions.includes(fileType)){
                     file.icon = 'doctype:image';
                 }else{
@@ -114,6 +171,7 @@ export default class ContentManager extends NavigationMixin(LightningElement) {
                         file.icon = 'doctype:' + fileType;
                     }
                 }
+                this.testConsole(file);
             });
             this.dataList = finalData;
         })
